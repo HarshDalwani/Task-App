@@ -78,19 +78,27 @@ export default {
   components: {
     TaskList,
   },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+  },
   methods: {
     createTask() {
       axios
-        .post("http://localhost:3000/create-task", { obj: this.taskObj })
+        .post(`${process.env.VUE_APP_API_URL}tasks/create`, {
+          taskObj: this.taskObj,
+          userId: this.user.id,
+        })
         .then((res) => {
-          console.log(res.data);
+          alert(res.data.message);
           window.location.reload()
         })
         .catch((err) => console.error(err));
     },
     listTasks() {
       axios
-        .get("http://localhost:3000/list-tasks")
+        .get(`${process.env.VUE_APP_API_URL}tasks/get/${this.user.id}`, {})
         .then(({ data }) => {
           this.tasks = data;
         })
